@@ -1,0 +1,15 @@
+.review-tools/
+**/bin/
+**/obj/
+.env
+artifacts/*.log
+artifacts/local-secrets*
+**/__pycache__/
+TestResults/
+.DS_Store
+
+# Generated evidence and local planning notes
+artifacts/
+review/
+docs/interview-demo.md
+docs/independent-review.md

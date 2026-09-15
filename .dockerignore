@@ -1,0 +1,9 @@
+.review-tools
+**/bin
+**/obj
+.env
+.git
+artifacts
+review
+tests
+docs

@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../Relay.Contracts/Relay.Contracts.csproj" /></ItemGroup></Project>
