@@ -1,0 +1,27 @@
+services:
+  migrator:
+    build: { context: .., args: { PROJECT: Relay.Migrator } }
+    environment:
+      Relay__Database: Host=postgres;Database=relay;Username=relay;Password=${POSTGRES_PASSWORD}
+    depends_on:
+      postgres: { condition: service_healthy }
+  api:
+    build: { context: .., args: { PROJECT: Relay.Api } }
+    environment:
+      Relay__Database: Host=postgres;Database=relay;Username=relay;Password=${POSTGRES_PASSWORD}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4317
+    ports: ["127.0.0.1:5080:8080"]
+    depends_on:
+      migrator: { condition: service_completed_successfully }
+  worker:
+    build: { context: .., args: { PROJECT: Relay.Worker } }
+    environment:
+      Relay__Database: Host=postgres;Database=relay;Username=relay;Password=${POSTGRES_PASSWORD}
+      Relay__ServiceBusConnectionString: Endpoint=sb://emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+      Relay__Queue: relay
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4317
+    ports: ["127.0.0.1:5081:8080"]
+    depends_on:
+      migrator: { condition: service_completed_successfully }
+      emulator: { condition: service_started }
+    stop_grace_period: 65s

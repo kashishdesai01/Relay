@@ -1,0 +1,20 @@
+services:
+  trace-init:
+    image: busybox:1.37.0
+    user: "0:0"
+    network_mode: none
+    command: ["sh", "-c", "chown 10001:10001 /data"]
+    volumes: ["relay-traces:/data"]
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.139.0
+    command: ["--config=/etc/otelcol/config.yaml"]
+    depends_on:
+      trace-init: { condition: service_completed_successfully }
+    volumes: ["./otel-collector.yaml:/etc/otelcol/config.yaml:ro", "relay-traces:/data"]
+    ports: ["127.0.0.1:4317:4317", "127.0.0.1:9464:9464"]
+  prometheus:
+    image: prom/prometheus:v3.7.3
+    volumes: ["./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro", "./prometheus/rules.yml:/etc/prometheus/rules.yml:ro"]
+    ports: ["127.0.0.1:9090:9090"]
+volumes:
+  relay-traces:

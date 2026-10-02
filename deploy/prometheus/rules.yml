@@ -1,0 +1,24 @@
+groups:
+  - name: relay
+    rules:
+      - alert: RelayDispatchDelayed
+        expr: relay_outbox_oldest_age_seconds > 60
+        for: 2m
+        labels: { severity: warning }
+        annotations:
+          summary: Relay dispatch backlog is aging
+          runbook: docs/runbook.md
+      - alert: RelayDispatchQuarantine
+        expr: increase(relay_dispatch_failures_total{kind="permanent"}[5m]) > 0
+        labels: { severity: warning }
+        annotations: { summary: An event needs dispatch recovery, runbook: docs/runbook.md }
+      - alert: RelayDatabaseBreakerOpen
+        expr: relay_breaker_state > 0
+        for: 1m
+        labels: { severity: warning }
+        annotations: { summary: Consumption paused after database failure, runbook: docs/runbook.md }
+      - alert: RelayConsumerFailures
+        expr: sum(rate(relay_consume_total{outcome="transient"}[5m])) / clamp_min(sum(rate(relay_consume_total[5m])), 0.001) > 0.1
+        for: 2m
+        labels: { severity: warning }
+        annotations: { summary: Consumer retry ratio is elevated, runbook: docs/runbook.md }

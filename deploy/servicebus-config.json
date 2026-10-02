@@ -1,0 +1,25 @@
+{
+  "UserConfig": {
+    "Namespaces": [{
+      "Name": "sbemulatorns",
+      "Queues": [
+        { "Name": "relay", "Properties": {
+          "DeadLetteringOnMessageExpiration": true, "DefaultMessageTimeToLive": "PT1H",
+          "DuplicateDetectionHistoryTimeWindow": "PT20S", "RequiresDuplicateDetection": true,
+          "LockDuration": "PT1M", "MaxDeliveryCount": 8, "RequiresSession": false
+        }},
+        { "Name": "relay-tests", "Properties": {
+          "DeadLetteringOnMessageExpiration": true, "DefaultMessageTimeToLive": "PT1H",
+          "DuplicateDetectionHistoryTimeWindow": "PT20S", "RequiresDuplicateDetection": true,
+          "LockDuration": "PT5S", "MaxDeliveryCount": 3, "RequiresSession": false
+        }},
+        { "Name": "relay-expiry", "Properties": {
+          "DeadLetteringOnMessageExpiration": true, "DefaultMessageTimeToLive": "PT5S",
+          "DuplicateDetectionHistoryTimeWindow": "PT20S", "RequiresDuplicateDetection": false,
+          "LockDuration": "PT5S", "MaxDeliveryCount": 3, "RequiresSession": false
+        }}
+      ], "Topics": []
+    }],
+    "Logging": { "Type": "Console" }
+  }
+}
